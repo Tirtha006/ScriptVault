@@ -1,0 +1,56 @@
+CREATE DATABASE bank;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> USE bank;
+Database changed
+mysql> CREATE TABLE borrower(
+    -> roll_no INT,
+    -> name VARCHAR(20),
+    -> date_of_issue DATE,
+    -> name_of_book VARCHAR(20),
+    -> status VARCHAR(20));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> INSERT INTO borrower VALUES(2,'RAJ','2023-10-01','DSA','I');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> CREATE TABLE fine(
+    -> roll_no INT,
+    -> date DATE,
+    -> amt INT);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> delimiter //
+mysql> CREATE PROCEDURE bookfine(roll_new integer,book_name VARCHAR(30))
+    -> BEGIN
+    -> DECLARE X integer;
+    -> DECLARE CONTINUE HANDLER FOR NOT FOUND
+    -> BEGIN
+    -> SELECT CONCAT('ROLLNO',roll_new,'NOT FOUND') AS NoRecord;
+    -> END;
+    -> SELECT datediff(curdate(),date_of_issue) INTO X FROM borrower WHERE roll_no=roll_new;
+    -> if(X>15 && X<30)
+    -> then
+    -> INSERT INTO fine VALUES(roll_new,curdate(),(X*5));
+    -> END IF;
+    -> if(X>30)
+    -> then
+    -> INSERT INTO fine VALUES(roll_new,curdate(),(X*50));
+    -> END IF;
+    -> UPDATE borrower SET status='R' WHERE roll_no=roll_new;
+    -> END;
+    -> //
+Query OK, 0 rows affected, 1 warning (0.01 sec)
+
+mysql> call bookfine(2,'DSA');
+    -> //
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM fine;
+    -> //
++---------+------------+------+
+| roll_no | date       | amt  |
++---------+------------+------+
+|       2 | 2023-11-08 | 1900 |
++---------+------------+------+
+1 row in set (0.00 sec)
