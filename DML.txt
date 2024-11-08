@@ -1,0 +1,168 @@
+mysql> CREATE DATABASE emp;
+mysql> use emp;
+Database changed
+mysql> CREATE TABLE Employee (
+    ->     EmployeeID INT PRIMARY KEY,
+    ->     FirstName VARCHAR(50),
+    ->     LastName VARCHAR(50),
+    ->     Department VARCHAR(50),
+    ->     Salary DECIMAL(10, 2)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> INSERT INTO Employee (EmployeeID, FirstName, LastName, Department, Salary)
+    -> VALUES
+    ->     (1, 'aishwarya', 'ghumare', 'HR', 50000.00),
+    ->     (2, 'sakshi', 'pingle', 'IT', 60000.00),
+    ->     (3, 'trupti', 'gunjal', 'Marketing', 55000.00),
+    ->     (4, 'samiksha', 'bhuruk', 'Finance', 62000.00);
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Employee;
++------------+-----------+----------+------------+----------+
+| EmployeeID | FirstName | LastName | Department | Salary   |
++------------+-----------+----------+------------+----------+
+|          1 | aishwarya | ghumare  | HR         | 50000.00 |
+|          2 | sakshi    | pingle   | IT         | 60000.00 |
+|          3 | trupti    | gunjal   | Marketing  | 55000.00 |
+|          4 | samiksha  | bhuruk   | Finance    | 62000.00 |
++------------+-----------+----------+------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT FirstName, LastName
+    -> FROM Employee
+    -> WHERE Department = 'IT';
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| sakshi    | pingle   |
++-----------+----------+
+1 row in set (0.00 sec)
+
+mysql> UPDATE Employee
+    -> SET Salary = Salary * 0.1
+    -> WHERE Department = 'HR';
+Query OK, 1 row affected (0.02 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM Employee;
++------------+-----------+----------+------------+----------+
+| EmployeeID | FirstName | LastName | Department | Salary   |
++------------+-----------+----------+------------+----------+
+|          1 | aishwarya | ghumare  | HR         | 55000.00 |
+|          2 | sakshi    | pingle   | IT         | 60000.00 |
+|          3 | trupti    | gunjal   | Marketing  | 55000.00 |
+|          4 | samiksha  | bhuruk   | Finance    | 62000.00 |
++------------+-----------+----------+------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> DELETE FROM Employee
+    -> WHERE Department = 'Finance';
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM Employee;
++------------+-----------+----------+------------+----------+
+| EmployeeID | FirstName | LastName | Department | Salary   |
++------------+-----------+----------+------------+----------+
+|          1 | aishwarya | ghumare  | HR         | 55000.00 |
+|          2 | sakshi    | pingle   | IT         | 60000.00 |
+|          3 | trupti    | gunjal   | Marketing  | 55000.00 |
++------------+-----------+----------+------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT *
+    -> FROM Employee
+    -> ORDER BY Salary DESC;
++------------+-----------+----------+------------+----------+
+| EmployeeID | FirstName | LastName | Department | Salary   |
++------------+-----------+----------+------------+----------+
+|          2 | sakshi    | pingle   | IT         | 60000.00 |
+|          1 | aishwarya | ghumare  | HR         | 55000.00 |
+|          3 | trupti    | gunjal   | Marketing  | 55000.00 |
++------------+-----------+----------+------------+----------+
+3 rows in set (0.00 sec)
+
+mysql> SELECT Department, COUNT(*) AS TotalEmployees
+    -> FROM Employee
+    -> GROUP BY Department;
++------------+----------------+
+| Department | TotalEmployees |
++------------+----------------+
+| HR         |              1 |
+| IT         |              1 |
+| Marketing  |              1 |
++------------+----------------+
+3 rows in set (0.01 sec)
+
+mysql> SELECT MIN(Salary) AS MinSalary
+    -> FROM Employee
+    -> WHERE Department = 'HR';
++-----------+
+| MinSalary |
++-----------+
+|  55000.00 |
++-----------+
+1 row in set (0.01 sec)
+
+mysql> SELECT *
+    -> FROM Employee
+    -> WHERE FirstName LIKE 'I%';
+Empty set (0.00 sec)
+
+mysql> INSERT INTO Employee (EmployeeID, FirstName, LastName, Department, Salary)
+    -> VALUES
+    ->     (5, 'Ishwari', 'yadav', 'HR', 50000.00);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT *
+    -> FROM Employee
+    -> WHERE FirstName LIKE 'I%';
++------------+-----------+----------+------------+----------+
+| EmployeeID | FirstName | LastName | Department | Salary   |
++------------+-----------+----------+------------+----------+
+|          5 | Ishwari   | yadav    | HR         | 50000.00 |
++------------+-----------+----------+------------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT *
+    -> FROM Employee
+    -> WHERE Salary NOT BETWEEN 75000 AND 100000;
++------------+-----------+----------+------------+----------+
+| EmployeeID | FirstName | LastName | Department | Salary   |
++------------+-----------+----------+------------+----------+
+|          1 | aishwarya | ghumare  | HR         | 55000.00 |
+|          2 | sakshi    | pingle   | IT         | 60000.00 |
+|          3 | trupti    | gunjal   | Marketing  | 55000.00 |
+|          5 | Ishwari   | yadav    | HR         | 50000.00 |
++------------+-----------+----------+------------+----------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT *
+    -> FROM Employee
+    -> WHERE Salary = (SELECT MAX(Salary) FROM Employee);
++------------+-----------+----------+------------+----------+
+| EmployeeID | FirstName | LastName | Department | Salary   |
++------------+-----------+----------+------------+----------+
+|          2 | sakshi    | pingle   | IT         | 60000.00 |
++------------+-----------+----------+------------+----------+
+1 row in set (0.01 sec)
+
+
+mysql> SELECT
+    ->     Department,
+    ->     MAX(Salary) AS MaxSalary,
+    ->     MIN(Salary) AS MinSalary,
+    ->     AVG(Salary) AS AvgSalary,
+    ->     SUM(Salary) AS TotalSalary,
+    ->     COUNT(*) AS EmployeeCount
+    -> FROM Employee
+    -> GROUP BY Department;
++------------+-----------+-----------+--------------+-------------+---------------+
+| Department | MaxSalary | MinSalary | AvgSalary    | TotalSalary | EmployeeCount |
++------------+-----------+-----------+--------------+-------------+---------------+
+| HR         |  55000.00 |  50000.00 | 52500.000000 |   105000.00 |             2 |
+| IT         |  60000.00 |  60000.00 | 60000.000000 |    60000.00 |             1 |
+| Marketing  |  55000.00 |  55000.00 | 55000.000000 |    55000.00 |             1 |
++------------+-----------+-----------+--------------+-------------+---------------+
+3 rows in set (0.00 sec)
